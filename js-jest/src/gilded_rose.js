@@ -16,12 +16,12 @@ class Shop {
 			if (item.name === 'Sulfuras, Hand of Ragnaros') return;
 
 			if (item.name === 'Aged Brie') {
-				this.increaseQualityUpTo50(item, this.isExpired(item) ? 2 : 1);
+				item.quality = this.getQualityIncreasedUpTo50(item, this.isExpired(item) ? 2 : 1);
 			} else if (item.name === 'Backstage passes to a TAFKAL80ETC concert') {
-				this.increaseQualityUpTo50(item, this.getBackstagePassesQualityIncrease(item.sellIn));
+				item.quality = this.getQualityIncreasedUpTo50(item, this.getBackstagePassesQualityIncrease(item.sellIn));
 				if (item.sellIn === 0) item.quality = 0;
 			} else {
-				this.decreaseQualityDownTo0(item, this.isExpired(item) ? 2 : 1);
+				item.quality = this.getQualityDecreasedDownTo0(item, this.isExpired(item) ? 2 : 1);
 			}
 
 			item.sellIn = item.sellIn - 1;
@@ -41,12 +41,12 @@ class Shop {
 		return qualityIncrease;
 	}
 
-	decreaseQualityDownTo0(item, amount = 1) {
-		item.quality = Math.max(item.quality - amount, 0);
+	getQualityDecreasedDownTo0(item, amount = 1) {
+		return Math.max(item.quality - amount, 0);
 	}
 
-	increaseQualityUpTo50(item, amount = 1) {
-		item.quality = Math.min(item.quality + amount, 50);
+	getQualityIncreasedUpTo50(item, amount = 1) {
+		return Math.min(item.quality + amount, 50);
 	}
 }
 
