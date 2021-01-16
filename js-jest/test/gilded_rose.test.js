@@ -114,6 +114,29 @@ describe(`Gilded Rose`, () => {
 				);
 			});
 		});
+
+		describe(`Conjured items`, () => {
+			it(`should degrade by 1 in sellIn and 2 in quality`, () => {
+				verifyItemAfterUpdate(
+					new Item("Conjured Mana Cake", 10, 5),
+					new Item("Conjured Mana Cake", 9, 3),
+				);
+			});
+
+			it(`should degrade in quality twice as fast once the sellBy has passed`, () => {
+				verifyItemAfterUpdate(
+					new Item("Conjured Mana Cake", 0, 5),
+					new Item("Conjured Mana Cake", -1, 1),
+				);
+			});
+
+			it(`should never degrade below quality 0`, () => {
+				verifyItemAfterUpdate(
+					new Item("Conjured Mana Cake", 5, 0),
+					new Item("Conjured Mana Cake", 4, 0),
+				);
+			});
+		});
 	});
 });
 

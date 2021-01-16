@@ -37,19 +37,21 @@ class Shop {
 			case 'Sulfuras, Hand of Ragnaros':
 				return item.quality;
 			case 'Aged Brie':
-				return this.getQualityIncreasedUpTo50(item, this.isExpired(item) ? 2 : 1);
+				return this.qualityIncreasedUpTo50(item, this.isExpired(item) ? 2 : 1);
 			case 'Backstage passes to a TAFKAL80ETC concert':
 				if (this.isExpired(item)) {
 					return 0
 				} else if (item.sellIn > 10) {
-					return this.getQualityIncreasedUpTo50(item, 1);
+					return this.qualityIncreasedUpTo50(item, 1);
 				} else if (item.sellIn > 5) {
-					return this.getQualityIncreasedUpTo50(item, 2);
+					return this.qualityIncreasedUpTo50(item, 2);
 				} else {
-					return this.getQualityIncreasedUpTo50(item, 3);
+					return this.qualityIncreasedUpTo50(item, 3);
 				}
+			case 'Conjured Mana Cake':
+				return this.qualityDecreasedDownTo0(item, this.isExpired(item) ? 4 : 2);
 			default:
-				return this.getQualityDecreasedDownTo0(item, this.isExpired(item) ? 2 : 1);
+				return this.qualityDecreasedDownTo0(item, this.isExpired(item) ? 2 : 1);
 		}
 	}
 
@@ -57,11 +59,11 @@ class Shop {
 		return item.sellIn <= 0;
 	}
 
-	getQualityDecreasedDownTo0(item, amount = 1) {
+	qualityDecreasedDownTo0(item, amount = 1) {
 		return Math.max(item.quality - amount, 0);
 	}
 
-	getQualityIncreasedUpTo50(item, amount = 1) {
+	qualityIncreasedUpTo50(item, amount = 1) {
 		return Math.min(item.quality + amount, 50);
 	}
 }
