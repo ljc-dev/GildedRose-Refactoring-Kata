@@ -12,13 +12,24 @@ class Shop {
 	}
 
 	updateQuality() {
-		this.items.forEach(item => {
-			if (item.name === 'Sulfuras, Hand of Ragnaros') return;
-			item.quality = this.getNextQuality(item)
-			item.sellIn = item.sellIn - 1;
+		this.items = this.items.map(item => {
+			return {
+				...item,
+				sellIn: this.getNextSellIn(item),
+				quality: this.getNextQuality(item),
+			};
 		});
 
 		return this.items;
+	}
+
+	getNextSellIn(item) {
+		switch (item.name) {
+			case 'Sulfuras, Hand of Ragnaros':
+				return item.sellIn;
+			default:
+				return item.sellIn - 1;
+		}
 	}
 
 	getNextQuality(item) {
@@ -28,8 +39,15 @@ class Shop {
 			case 'Aged Brie':
 				return this.getQualityIncreasedUpTo50(item, this.isExpired(item) ? 2 : 1);
 			case 'Backstage passes to a TAFKAL80ETC concert':
-				if (item.sellIn === 0) return 0
-				return this.getQualityIncreasedUpTo50(item, this.getBackstagePassesQualityIncrease(item.sellIn));
+				if (this.isExpired(item)) {
+					return 0
+				} else if (item.sellIn > 10) {
+					return this.getQualityIncreasedUpTo50(item, 1);
+				} else if (item.sellIn > 5) {
+					return this.getQualityIncreasedUpTo50(item, 2);
+				} else {
+					return this.getQualityIncreasedUpTo50(item, 3);
+				}
 			default:
 				return this.getQualityDecreasedDownTo0(item, this.isExpired(item) ? 2 : 1);
 		}
@@ -37,13 +55,6 @@ class Shop {
 
 	isExpired(item) {
 		return item.sellIn <= 0;
-	}
-
-	getBackstagePassesQualityIncrease(sellIn) {
-		let qualityIncrease = 1;
-		if (sellIn < 11) qualityIncrease = 2;
-		if (sellIn < 6) qualityIncrease = 3;
-		return qualityIncrease;
 	}
 
 	getQualityDecreasedDownTo0(item, amount = 1) {
