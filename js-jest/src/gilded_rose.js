@@ -14,20 +14,25 @@ class Shop {
 	updateQuality() {
 		this.items.forEach(item => {
 			if (item.name === 'Sulfuras, Hand of Ragnaros') return;
-
-			if (item.name === 'Aged Brie') {
-				item.quality = this.getQualityIncreasedUpTo50(item, this.isExpired(item) ? 2 : 1);
-			} else if (item.name === 'Backstage passes to a TAFKAL80ETC concert') {
-				item.quality = this.getQualityIncreasedUpTo50(item, this.getBackstagePassesQualityIncrease(item.sellIn));
-				if (item.sellIn === 0) item.quality = 0;
-			} else {
-				item.quality = this.getQualityDecreasedDownTo0(item, this.isExpired(item) ? 2 : 1);
-			}
-
+			item.quality = this.getNextQuality(item)
 			item.sellIn = item.sellIn - 1;
 		});
 
 		return this.items;
+	}
+
+	getNextQuality(item) {
+		switch (item.name) {
+			case 'Sulfuras, Hand of Ragnaros':
+				return item.quality;
+			case 'Aged Brie':
+				return this.getQualityIncreasedUpTo50(item, this.isExpired(item) ? 2 : 1);
+			case 'Backstage passes to a TAFKAL80ETC concert':
+				if (item.sellIn === 0) return 0
+				return this.getQualityIncreasedUpTo50(item, this.getBackstagePassesQualityIncrease(item.sellIn));
+			default:
+				return this.getQualityDecreasedDownTo0(item, this.isExpired(item) ? 2 : 1);
+		}
 	}
 
 	isExpired(item) {
